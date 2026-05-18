@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MessageBroker": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

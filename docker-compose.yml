@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: stalker
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shopnet
+
+  messagebroker:
+    build: ./MessageBroker
+    networks:
+      - shopnet
+    environment:
+      - BROKER_PORT=5002
+
+  restapi:
+    build: ./RestApi
+    ports:
+      - "5001:5001"   
+    networks:
+      - shopnet
+    environment:
+      - BROKER_HOST=messagebroker
+      - BROKER_PORT=5002
+      - PG_CONNECTION=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=stalker
+
+  orderworker:
+    build: ./OrderWorker
+    networks:
+      - shopnet
+    environment:
+      - BROKER_HOST=messagebroker
+      - BROKER_PORT=5002
+      - PG_CONNECTION=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=stalker
+    deploy:
+      replicas: 5
+networks:
+  shopnet:
+    driver: bridge
+
+volumes:
+  pgdata:

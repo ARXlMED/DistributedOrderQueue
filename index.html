@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин (отслеживание заказа)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        .order-item-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+            .order-item-row input {
+                flex: 1;
+            }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+            position: relative;
+        }
+
+            .status-bar::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: #ddd;
+                z-index: 1;
+                transform: translateY(-50%);
+            }
+
+        .status-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+            .status-step .circle {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #ddd;
+                color: white;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+
+            .status-step.active .circle {
+                background: #2196F3;
+            }
+
+            .status-step.completed .circle {
+                background: #4CAF50;
+            }
+
+        .status-label {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🛒 Оформление заказа</h2>
+
+    <div>
+        <h3>Ваши данные</h3>
+        <input type="email" id="email" placeholder="Email" value="user@example.com">
+        <input type="password" id="password" placeholder="Пароль" value="secret">
+        <input type="text" id="cardNumber" placeholder="Номер карты" value="1234567812345678">
+    </div>
+
+    <div>
+        <h3>Товары</h3>
+        <div id="order-items">
+            <div class="order-item-row">
+                <input type="text" class="item-product-id" placeholder="Код" value="p1">
+                <input type="text" class="item-name" placeholder="Название" value="Футболка">
+                <input type="number" class="item-qty" placeholder="Кол-во" value="2" min="1">
+                <input type="number" class="item-price" placeholder="Цена" value="19.99" step="0.01">
+            </div>
+        </div>
+        <button onclick="addItem()" style="width:auto; margin-top:5px;">+ Добавить товар</button>
+    </div>
+
+    <div style="margin-top:15px;">
+        <label>Тип доставки:</label>
+        <select id="deliveryType">
+            <option value="standard">Стандартная</option>
+            <option value="express">Экспресс</option>
+        </select>
+        <label>Адрес:</label>
+        <input type="text" id="address" placeholder="г. Минск, ул. Примерная, д.5" value="г. Минск, ул. Примерная, д.5">
+    </div>
+
+    <button onclick="createOrder()" style="margin-top:20px;">Оформить заказ</button>
+    <div id="order-error" style="color:red; margin-top:10px;"></div>
+
+    <!-- Отслеживание заказа -->
+    <div id="tracking" style="display:none; margin-top:20px;">
+        <h3>Заказ <span id="orderIdDisplay"></span></h3>
+        <div class="status-bar">
+            <div class="status-step" id="step-accepted">
+                <div class="circle">1</div>
+                <div class="status-label">Принят</div>
+            </div>
+            <div class="status-step" id="step-processed">
+                <div class="circle">2</div>
+                <div class="status-label">Обработан</div>
+            </div>
+            <div class="status-step" id="step-cancelled" style="display:none;">
+                <div class="circle">✕</div>
+                <div class="status-label">Отменён</div>
+            </div>
+            <div class="status-step" id="step-shipped">
+                <div class="circle">3</div>
+                <div class="status-label">Отправлен</div>
+            </div>
+            <div class="status-step" id="step-at_pickup">
+                <div class="circle">4</div>
+                <div class="status-label">В пункте выдачи</div>
+            </div>
+            <div class="status-step" id="step-delivered">
+                <div class="circle">5</div>
+                <div class="status-label">Доставлен</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.2:5001';
+        let currentOrderId = null;
+        let pollInterval = null;
+        // Порядок статусов для прогресс-бара (отображаются все, cancelled показывается особым образом)
+        const statusOrder = ['accepted', 'processed', 'shipped', 'at_pickup', 'delivered'];
+
+        function addItem() {
+            const container = document.getElementById('order-items');
+            const row = document.createElement('div');
+            row.className = 'order-item-row';
+            row.innerHTML = `
+                    <input type="text" class="item-product-id" placeholder="Код" value="">
+                    <input type="text" class="item-name" placeholder="Название" value="">
+                    <input type="number" class="item-qty" placeholder="Кол-во" value="1" min="1">
+                    <input type="number" class="item-price" placeholder="Цена" value="0.00" step="0.01">
+                    <button onclick="this.parentElement.remove()" style="width:auto; background-color:#f44336;">X</button>
+                `;
+            container.appendChild(row);
+        }
+
+        function getOrderItems() {
+            const rows = document.querySelectorAll('.order-item-row');
+            const items = [];
+            rows.forEach(row => {
+                const productId = row.querySelector('.item-product-id').value.trim();
+                const name = row.querySelector('.item-name').value.trim();
+                const quantity = parseInt(row.querySelector('.item-qty').value) || 0;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                if (productId && name && quantity > 0) {
+                    items.push({ productId, name, quantity, price });
+                }
+            });
+            return items;
+        }
+
+        async function createOrder() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const deliveryType = document.getElementById('deliveryType').value;
+            const address = document.getElementById('address').value.trim();
+            const items = getOrderItems();
+
+            document.getElementById('order-error').textContent = '';
+
+            if (!email || !password) {
+                document.getElementById('order-error').textContent = 'Введите email и пароль';
+                return;
+            }
+            if (!cardNumber) {
+                document.getElementById('order-error').textContent = 'Введите номер карты';
+                return;
+            }
+            if (items.length === 0) {
+                document.getElementById('order-error').textContent = 'Добавьте хотя бы один товар';
+                return;
+            }
+            if (!address) {
+                document.getElementById('order-error').textContent = 'Введите адрес';
+                return;
+            }
+
+            const body = { email, password, cardNumber, items, deliveryType, address };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    currentOrderId = data.orderId;
+                    document.getElementById('orderIdDisplay').textContent = currentOrderId;
+                    document.getElementById('tracking').style.display = 'block';
+                    startPollingStatus();
+                } else {
+                    throw new Error(data.error || 'Ошибка создания заказа');
+                }
+            } catch (err) {
+                document.getElementById('order-error').textContent = err.message;
+            }
+        }
+
+        function startPollingStatus() {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/api/orders/${currentOrderId}`);
+                    if (!response.ok) throw new Error('Ошибка статуса');
+                    const order = await response.json();
+                    updateStatusBar(order.status);
+                    if (order.status === 'delivered' || order.status === 'cancelled') {
+                        clearInterval(pollInterval);
+                        pollInterval = null;
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }, 1000);
+        }
+
+        function updateStatusBar(currentStatus) {
+            // Показываем/скрываем шаг cancelled
+            const cancelledStep = document.getElementById('step-cancelled');
+            if (currentStatus === 'cancelled') {
+                cancelledStep.style.display = 'block';
+                // Все остальные шаги делаем неактивными
+                document.querySelectorAll('.status-step').forEach(step => step.classList.remove('active', 'completed'));
+                cancelledStep.classList.add('active');
+                return;
+            } else {
+                cancelledStep.style.display = 'none';
+            }
+
+            let found = false;
+            for (let i = 0; i < statusOrder.length; i++) {
+                const stepEl = document.getElementById('step-' + statusOrder[i]);
+                if (!stepEl) continue;
+                stepEl.classList.remove('active', 'completed');
+                if (statusOrder[i] === currentStatus) {
+                    stepEl.classList.add('active');
+                    found = true;
+                } else if (!found) {
+                    stepEl.classList.add('completed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

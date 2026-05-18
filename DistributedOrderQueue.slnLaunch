@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "Запустить всё",
+    "Projects": [
+      {
+        "Path": "MessageBroker\\MessageBroker.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "OrderWorker\\OrderWorker.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "RestAPI\\RestAPI.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "StressTest\\StressTest.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "CardService\\CardService.csproj",
+        "Action": "StartWithoutDebugging"
+      }
+    ]
+  }
+]

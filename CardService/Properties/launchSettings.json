@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CardService": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
