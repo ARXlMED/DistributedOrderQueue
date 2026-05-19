@@ -4,23 +4,28 @@
     "Projects": [
       {
         "Path": "MessageBroker\\MessageBroker.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "MessageBroker"
       },
       {
         "Path": "OrderWorker\\OrderWorker.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "OrderWorker"
       },
       {
         "Path": "RestAPI\\RestAPI.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "RestAPI"
       },
       {
         "Path": "StressTest\\StressTest.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "StressTest"
       },
       {
         "Path": "CardService\\CardService.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "CardService"
       }
     ]
   }

@@ -104,29 +104,33 @@ namespace CardService
 
         private async Task<string> ChargeAsync(string userIdStr, string amountStr, string cardNumber)
         {
+            Console.WriteLine($"[CARD] CHARGE запрос: userIdStr={userIdStr}, amountStr={amountStr}, cardNumber={cardNumber}");
             if (!int.TryParse(userIdStr, out int userId) || !decimal.TryParse(amountStr, out decimal amount))
+            {
+                Console.WriteLine($"[CARD] Ошибка парсинга чисел");
                 return "ERROR Invalid arguments";
+            }
 
+            Console.WriteLine($"[CARD] Открываю соединение с БД");
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
+            Console.WriteLine($"[CARD] Соединение открыто");
 
-            // Обновить или вставить карту пользователя
-            await using var upsertCmd = new NpgsqlCommand(@"
-                INSERT INTO cards (user_id, card_number, balance) 
-                VALUES (@userId, @cardNumber, 10000)
-                ON CONFLICT (user_id) DO UPDATE SET card_number = @cardNumber
-            ", conn);
+            await using var upsertCmd = new NpgsqlCommand(@"INSERT INTO cards (user_id, card_number, balance) VALUES (@userId, @cardNumber, 100000) ON CONFLICT (user_id) DO UPDATE SET card_number = @cardNumber", conn);
             upsertCmd.Parameters.AddWithValue("userId", userId);
             upsertCmd.Parameters.AddWithValue("cardNumber", cardNumber);
+            Console.WriteLine($"[CARD] Выполняю UPSERT для userId={userId}");
             await upsertCmd.ExecuteNonQueryAsync();
+            Console.WriteLine($"[CARD] UPSERT выполнен");
 
-            // Попытаться списать
             await using var chargeCmd = new NpgsqlCommand(
                 "UPDATE cards SET balance = balance - @amount WHERE user_id = @userId AND balance >= @amount",
                 conn);
             chargeCmd.Parameters.AddWithValue("amount", amount);
             chargeCmd.Parameters.AddWithValue("userId", userId);
+            Console.WriteLine($"[CARD] Пытаюсь списать {amount} с userId={userId}");
             int rows = await chargeCmd.ExecuteNonQueryAsync();
+            Console.WriteLine($"[CARD] Списание: rowsAffected={rows}");
 
             return rows > 0 ? "OK" : "FAIL Insufficient funds";
         }

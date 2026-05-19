@@ -30,6 +30,7 @@ namespace OrderWorker
 
             cardServiceIP = IPAddress.Parse(
                 Environment.GetEnvironmentVariable("CARD_SERVICE_HOST") ?? "127.0.0.4");
+            //cardServiceIP = IPAddress.Parse("192.168.10.115");
             cardServicePort = int.Parse(
                 Environment.GetEnvironmentVariable("CARD_SERVICE_PORT") ?? "6000");
 
@@ -145,19 +146,22 @@ namespace OrderWorker
         {
             try
             {
+                Console.WriteLine($"[ВОРКЕР] Подключаюсь к CardService {cardServiceIP}:{cardServicePort}");
                 using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 await socket.ConnectAsync(new IPEndPoint(cardServiceIP, cardServicePort));
 
                 string cmd = $"CHARGE {userId} {amount} {cardNumber}\n";
+                Console.WriteLine($"[ВОРКЕР] Отправляю: {cmd.Trim()}");
                 byte[] cmdBytes = Encoding.UTF8.GetBytes(cmd);
                 await socket.SendAsync(cmdBytes, SocketFlags.None);
 
                 string? response = await ReceiveLineAsync(socket);
+                Console.WriteLine($"[ВОРКЕР] Ответ от CardService: '{response}'");
                 return response != null && response.StartsWith("OK");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка соединения с CardService: {ex.Message}");
+                Console.WriteLine($"[ВОРКЕР] Ошибка соединения с CardService: {ex.Message}");
                 return false;
             }
         }
