@@ -105,12 +105,12 @@ namespace CardService
         private async Task<string> ChargeAsync(string userIdStr, string amountStr, string cardNumber)
         {
             Console.WriteLine($"[CARD] CHARGE запрос: userIdStr={userIdStr}, amountStr={amountStr}, cardNumber={cardNumber}");
-            if (!int.TryParse(userIdStr, out int userId) || !decimal.TryParse(amountStr, out decimal amount))
+            Console.WriteLine($"[CARD] amountStr байты: {BitConverter.ToString(Encoding.UTF8.GetBytes(amountStr))}");
+            if (!int.TryParse(userIdStr, out int userId) || !decimal.TryParse(amountStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal amount))
             {
                 Console.WriteLine($"[CARD] Ошибка парсинга чисел");
                 return "ERROR Invalid arguments";
             }
-
             Console.WriteLine($"[CARD] Открываю соединение с БД");
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();

@@ -1,10 +1,7 @@
 {
   "profiles": {
     "OrderWorker": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "CARD_SERVICE_HOST": "192.168.10.115"
-      }
+      "commandName": "Project"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker"

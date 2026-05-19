@@ -150,8 +150,7 @@ namespace OrderWorker
                 using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 await socket.ConnectAsync(new IPEndPoint(cardServiceIP, cardServicePort));
 
-                string cmd = $"CHARGE {userId} {amount} {cardNumber}\n";
-                Console.WriteLine($"[ВОРКЕР] Отправляю: {cmd.Trim()}");
+                string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n"; Console.WriteLine($"[ВОРКЕР] Отправляю: {cmd.Trim()}");
                 byte[] cmdBytes = Encoding.UTF8.GetBytes(cmd);
                 await socket.SendAsync(cmdBytes, SocketFlags.None);
 
