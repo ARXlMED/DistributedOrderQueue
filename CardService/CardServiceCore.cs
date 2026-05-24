@@ -1,26 +1,29 @@
-﻿using System;
+﻿using Npgsql;
+using Shared;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Npgsql;
 
 namespace CardService
 {
     public class CardServiceCore
     {
-        private readonly IPAddress ip = IPAddress.Parse(Environment.GetEnvironmentVariable("CARD_LISTEN_HOST") ?? "127.0.0.4");
-        private readonly int port = 6000;
-        private readonly string connectionString;
+        IPAddress ip;
+        int port;
+        string connectionString;
         private Socket serverSocket;
         private bool isAlive = false;
 
         public CardServiceCore(string[] args)
         {
-            connectionString = Environment.GetEnvironmentVariable("CARD_PG_CONNECTION")
-                ?? "Host=localhost;Port=5432;Database=carddb;Username=postgres;Password=stalker";
-        }
+			string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
+			ip = IPAddress.Parse(ConfigLoader.Get(configPath, "CARD_SERVICE_HOST", "127.0.0.4"));
+			port = int.Parse(ConfigLoader.Get(configPath, "CARD_SERVICE_PORT", "6000"));
+			connectionString = ConfigLoader.Get(configPath, "CARD_PG_CONNECTION", "Host=localhost;Port=5432;Database=carddb;Username=postgres;Password=stalker");
+		}
 
         public async Task StartWorking()
         {

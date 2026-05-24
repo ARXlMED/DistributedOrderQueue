@@ -1,0 +1,5 @@
+﻿BROKER_HOST=127.0.0.3
+BROKER_PORT=5002
+PG_CONNECTION=Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker
+CARD_SERVICE_HOST=127.0.0.4
+CARD_SERVICE_PORT=6000

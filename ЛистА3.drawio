@@ -1,0 +1,365 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
+  <diagram name="A3 Форма 1" id="4UMWuW4LYQygtjcPz86S">
+    <mxGraphModel dx="659" dy="1921" grid="1" gridSize="3.937" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" background="none" math="0" shadow="0">
+      <root>
+        <object label="" BlueprintName="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;ГУИР.410902.012 СП&lt;/i&gt;&lt;/font&gt;" ProductName="&lt;font style=&quot;font-size: 18px;&quot; face=&quot;ISOCPEUR&quot;&gt;Сетевая распределенная очередель сообщений для обработки заказов в интернет-магазине&lt;/font&gt;" Material="&lt;font face=&quot;ISOCPEUR&quot;&gt;Схема алгоритма работы программы&lt;/font&gt;" Manufacturer="&lt;font face=&quot;ISOCPEUR&quot;&gt;ПОИТ, гр.410902&lt;/font&gt;" Designer="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;Гавлев Н.В.&lt;/i&gt;&lt;/font&gt;" Checker="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;span style=&quot;font-size: 12.5px;&quot;&gt;&lt;i&gt;Болтак С.В.&lt;/i&gt;&lt;/span&gt;&lt;/font&gt;" Approver="" Date="" Scale="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;1:1&lt;/i&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-0">
+          <mxCell />
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-1" parent="-3bvXb9xsOaprucixAK7-0" />
+        <mxCell id="-3bvXb9xsOaprucixAK7-3" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=none;strokeColor=#000000;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="79.86" y="20.69" width="1554.12" height="1129.92" as="geometry" />
+        </mxCell>
+        <object placeholder="BlueprintName" placeholders="1" label="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;Обозначение чертежа&lt;/i&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-4">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=none;strokeColor=#000000;fontFamily=GOSTRUS Type A;fontSize=24;rotation=-180;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="79.74000000000001" y="20.689999999999998" width="275.59" height="55.117999999999995" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-5" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5700000000022" y="934.067" width="728.3449999999999" height="216.535" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-6" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5800000000022" y="934.067" width="27.558999999999997" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-7" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5770000000023" y="953.754" width="27.558999999999997" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-8" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5870000000023" y="973.434" width="27.558999999999997" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-9" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5840000000022" y="993.1210000000001" width="27.558999999999997" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-10" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Изм&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5810000000023" y="1012.808" width="27.558999999999997" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-11" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="933.1470000000023" y="934.064" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-12" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="933.1440000000024" y="953.751" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-13" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="933.1540000000024" y="973.4309999999999" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-14" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="933.1510000000023" y="993.118" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-15" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Лист&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="933.1480000000024" y="1012.805" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-16" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5240000000024" y="934.071" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-17" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5210000000025" y="953.758" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-18" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5310000000025" y="973.438" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-19" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5280000000023" y="993.1250000000001" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-20" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;№ докум.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5250000000024" y="1012.812" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-21" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0810000000013" y="934.068" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-22" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0780000000013" y="953.755" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-23" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0880000000013" y="973.435" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-24" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0850000000014" y="993.1220000000001" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-25" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Подп.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0820000000015" y="1012.809" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-26" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0880000000013" y="1032.485" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-27" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0850000000014" y="1052.172" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-28" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0950000000014" y="1071.8519999999999" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-29" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0920000000015" y="1091.539" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-30" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.0890000000013" y="1111.2259999999999" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-31" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1549999999997" y="934.0719999999998" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-32" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1519999999996" y="953.7589999999999" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-33" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1619999999996" y="973.4389999999997" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-34" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1589999999997" y="993.1259999999999" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-35" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Дата&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1559999999997" y="1012.8129999999998" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <object placeholders="1" placeholder="Date" label="" id="-3bvXb9xsOaprucixAK7-36">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1122.1619999999996" y="1032.4789999999998" width="39.37" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <object placeholders="1" placeholder="Date" id="-3bvXb9xsOaprucixAK7-37">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1122.1589999999997" y="1052.166" width="39.37" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-38" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1689999999996" y="1071.8459999999998" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-39" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1659999999997" y="1091.533" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-40" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1122.1629999999998" y="1111.2199999999998" width="39.37" height="19.685" as="geometry" />
+        </mxCell>
+        <object placeholder="Date" placeholders="1" id="-3bvXb9xsOaprucixAK7-41">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=12;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1122.1299999999997" y="1130.9169999999997" width="39.37" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-42" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1063.1160000000013" y="1130.9229999999998" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-43" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Разраб.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.6050000000023" y="1032.482" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-44" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Проверил&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5720000000023" y="1052.1689999999999" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-45" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Т. контр.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.5690000000022" y="1071.8559999999998" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-46" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.6060000000023" y="1091.5429999999997" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-47" value="&lt;font face=&quot;ISOCPEUR&quot;&gt;Н. контр.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.6030000000022" y="1111.2399999999996" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-48" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Утв.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="905.6100000000023" y="1130.9269999999995" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <object placeholders="1" placeholder="Designer" label="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;Гавлев Н.В.&lt;/i&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-49">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="972.5620000000024" y="1032.499" width="90.551" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-50" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5190000000025" y="1091.5559999999998" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-51" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.4820000000025" y="1071.869" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <object placeholders="1" placeholder="Checker" label="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;span style=&quot;font-size: 12.5px;&quot;&gt;&lt;i&gt;Болтак С.В.&lt;/i&gt;&lt;/span&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-52">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="972.49" y="1052.18" width="90.5" height="19.68" as="geometry" />
+          </mxCell>
+        </object>
+        <object placeholders="1" placeholder="Approver" label="" id="-3bvXb9xsOaprucixAK7-53">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="972.5960000000025" y="1130.9029999999998" width="90.551" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-54" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="972.5590000000025" y="1111.216" width="90.551" height="19.685" as="geometry" />
+        </mxCell>
+        <object placeholders="1" placeholder="BlueprintName" label="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;ГУИР.410902.012 СП&lt;/i&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-55">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=28;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1161.5379999999984" y="934.075" width="472.44" height="59.055" as="geometry" />
+          </mxCell>
+        </object>
+        <object placeholders="1" placeholder="ProductName" label="&lt;font style=&quot;font-size: 18px;&quot; face=&quot;ISOCPEUR&quot;&gt;Сетевая распределенная очередель сообщений для обработки заказов в интернет-магазине&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-56">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=24;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1161.5349999999985" y="993.1020000000001" width="275.59" height="98.425" as="geometry" />
+          </mxCell>
+        </object>
+        <object placeholders="1" placeholder="Material" label="&lt;font face=&quot;ISOCPEUR&quot;&gt;Схема алгоритма работы программы&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-57">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=24;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1161.5019999999986" y="1091.529" width="275.59" height="59.055" as="geometry" />
+          </mxCell>
+        </object>
+        <object placeholders="1" placeholder="Manufacturer" label="&lt;font face=&quot;ISOCPEUR&quot;&gt;ПОИТ, гр.410902&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-58">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=24;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1437.1289999999906" y="1091.5559999999998" width="196.85" height="59.055" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Лист 1&lt;/font&gt;" placeholders="1" id="-3bvXb9xsOaprucixAK7-59">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1437.1259999999907" y="1071.8329999999996" width="78.74" height="19.685" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-60" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Листов 1&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1515.8029999999883" y="1071.8699999999994" width="118.11" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-61" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Масштаб&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1563.109999999987" y="993.1069999999993" width="70.866" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-62" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Масса&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1496.176999999989" y="993.1339999999993" width="66.929" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-63" value="&lt;font data-font-src=&quot;https://fonts-online.ru/fonts/isocpeur-v102&quot; face=&quot;ISOCPEUR&quot;&gt;Лит.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontStyle=2;fontSize=14;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1437.1239999999907" y="993.1009999999993" width="59.055" height="19.685" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-64" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1437.0909999999906" y="1012.8179999999993" width="59.055" height="59.055" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-65" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1496.183999999989" y="1012.7809999999994" width="66.929" height="59.055" as="geometry" />
+        </mxCell>
+        <object placeholders="1" placeholder="Scale" label="&lt;font face=&quot;ISOCPEUR&quot;&gt;&lt;i&gt;1:1&lt;/i&gt;&lt;/font&gt;" id="-3bvXb9xsOaprucixAK7-66">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;fontSize=18;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+            <mxGeometry x="1563.046999999987" y="1012.7839999999993" width="70.866" height="59.055" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="-3bvXb9xsOaprucixAK7-67" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1437.1279999999906" y="1012.7749999999993" width="19.685" height="59.055" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-68" value="&lt;font face=&quot;ISOCPEUR&quot;&gt;У&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1456.77499999999" y="1012.8219999999993" width="19.685" height="59.055" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-69" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=none;fontFamily=GOSTRUS Type A;strokeColor=#000000;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="1476.5019999999895" y="1012.8189999999993" width="19.685" height="59.055" as="geometry" />
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-99" value="" style="endArrow=none;html=1;fontSize=18;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="-3bvXb9xsOaprucixAK7-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="79.64149999999972" y="493.03849999999966" as="sourcePoint" />
+            <mxPoint x="79.63850000000002" y="20.648500000000126" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-3bvXb9xsOaprucixAK7-110" value="" style="endArrow=none;html=1;fontSize=18;strokeColor=#000000;strokeWidth=2;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="-3bvXb9xsOaprucixAK7-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="79.74400000000014" y="1150.5440000000003" as="sourcePoint" />
+            <mxPoint x="79.74000000000024" y="579.6750000000006" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-1" target="2Zfl1iuTTTAz4PDEZOnp-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-1" value="Начало" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="289.27" y="1342.52" width="137.9" height="44.39" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-2" target="2Zfl1iuTTTAz4PDEZOnp-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-2" value="Инициализация бд postgres" style="rounded=0;whiteSpace=wrap;html=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="298.27" y="1436.91" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-4" target="2Zfl1iuTTTAz4PDEZOnp-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-4" value="Инициализация бд carddb" style="rounded=0;whiteSpace=wrap;html=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="298.27" y="1546.91" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-6" target="2Zfl1iuTTTAz4PDEZOnp-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-6" value="Запуск RestAPI" style="rounded=0;whiteSpace=wrap;html=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="298.21999999999997" y="1657.48" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-8" target="2Zfl1iuTTTAz4PDEZOnp-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-8" value="Запуск брокера сообщений" style="rounded=0;whiteSpace=wrap;html=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="298.27" y="1767.71" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-10" target="2Zfl1iuTTTAz4PDEZOnp-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-10" value="Запуск воркеров" style="whiteSpace=wrap;html=1;rounded=0;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="298.27" y="1874.01" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-12" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="284.27" y="2012.91" />
+              <mxPoint x="266.27" y="2012.91" />
+            </Array>
+            <mxPoint x="267.72" y="2066.92" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-12" value="Выбор пользователя" style="rhombus;whiteSpace=wrap;html=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="303.77" y="1972.44" width="108.9" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-15" target="2Zfl1iuTTTAz4PDEZOnp-20" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-15" value="Делать запросы через консоль" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="388.8299999999999" y="2066.9700000000003" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="-3bvXb9xsOaprucixAK7-1" target="2Zfl1iuTTTAz4PDEZOnp-20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="267.77" y="2126.92" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-16" value="Работать через браузер" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="212.60000000000002" y="2062.99" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-12" target="2Zfl1iuTTTAz4PDEZOnp-15" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="448.27" y="2007.91" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-20" value="Конец" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="289.317" y="2177.0570000000002" width="137.9" height="44.39" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="-3bvXb9xsOaprucixAK7-1" source="2Zfl1iuTTTAz4PDEZOnp-25" target="2Zfl1iuTTTAz4PDEZOnp-26" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-25" value="Работать через браузер" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="456.097" y="-460.633" width="137.9" height="44.39" as="geometry" />
+        </mxCell>
+        <mxCell id="2Zfl1iuTTTAz4PDEZOnp-26" value="Ввод логина, пароля, адреса, номера карты, &lt;br&gt;типа доставки" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="-3bvXb9xsOaprucixAK7-1" vertex="1">
+          <mxGeometry x="444.88" y="-370.08000000000004" width="160.34" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="-3bvXb9xsOaprucixAK7-1" source="aln15WTYfBpAN6w_DOe5-0" target="aln15WTYfBpAN6w_DOe5-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-0" value="Начало" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="178" y="126" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="-3bvXb9xsOaprucixAK7-1" source="aln15WTYfBpAN6w_DOe5-2" target="aln15WTYfBpAN6w_DOe5-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="-3bvXb9xsOaprucixAK7-1" source="aln15WTYfBpAN6w_DOe5-2" target="aln15WTYfBpAN6w_DOe5-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="-3bvXb9xsOaprucixAK7-1" source="aln15WTYfBpAN6w_DOe5-2" target="aln15WTYfBpAN6w_DOe5-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="-3bvXb9xsOaprucixAK7-1" source="aln15WTYfBpAN6w_DOe5-2" target="aln15WTYfBpAN6w_DOe5-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-2" value="Запуск элементов&lt;br&gt;системы" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="167.18" y="251.97" width="141.63" height="83.94" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-4" value="REST API" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="308.81" y="366.14" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-6" value="Распределенная&amp;nbsp;&lt;br&gt;очередь" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="308.807" y="448.817" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-7" value="Обработчик&lt;br&gt;заказов" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="308.814" y="547.244" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="aln15WTYfBpAN6w_DOe5-8" value="Платёжный&lt;br&gt;сервис" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="-3bvXb9xsOaprucixAK7-1">
+          <mxGeometry x="308.81100000000004" y="633.8610000000001" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

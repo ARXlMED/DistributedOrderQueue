@@ -1,0 +1,3 @@
+﻿CARD_SERVICE_HOST=127.0.0.4
+CARD_SERVICE_PORT=6000
+CARD_PG_CONNECTION=Host=localhost;Port=5432;Database=carddb;Username=postgres;Password=stalker

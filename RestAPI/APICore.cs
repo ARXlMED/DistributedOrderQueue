@@ -8,25 +8,30 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Npgsql;
+using Shared;
 
 namespace RestAPI
 {
     public class APICore
     {
-        private readonly IPAddress ipAPI = IPAddress.Parse(Environment.GetEnvironmentVariable("API_LISTEN_HOST") ?? "127.0.0.2");
-        private readonly int portAPI = 5001;
-        private Socket acceptClients;
-        private bool isAlive = false;
+        IPAddress ipAPI = IPAddress.Parse(Environment.GetEnvironmentVariable("API_HOST") ?? "127.0.0.2");
+        int portAPI = int.Parse(Environment.GetEnvironmentVariable("API_PORT") ?? "5001");
+        Socket acceptClients;
+        bool isAlive = false;
 
-        private readonly IPAddress brokerIP = IPAddress.Parse("127.0.0.3");
-        private readonly int brokerPort = 5002;
+        IPAddress brokerIP = IPAddress.Parse(Environment.GetEnvironmentVariable("BROKER_HOST") ?? "127.0.0.3");
+        int brokerPort = int.Parse(Environment.GetEnvironmentVariable("BROKER_PORT") ?? "5002");
 
-        private readonly string connectionString;
+        string connectionString;
 
         public APICore(string[] args)
         {
-            connectionString = Environment.GetEnvironmentVariable("PG_CONNECTION")
-                ?? "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker";
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
+            ipAPI = IPAddress.Parse(ConfigLoader.Get(configPath, "API_HOST", "127.0.0.2"));
+            portAPI = int.Parse(ConfigLoader.Get(configPath, "API_PORT", "5001"));
+            brokerIP = IPAddress.Parse(ConfigLoader.Get(configPath, "BROKER_HOST", "127.0.0.3"));
+            brokerPort = int.Parse(ConfigLoader.Get(configPath, "BROKER_PORT", "5002"));
+            connectionString = ConfigLoader.Get(configPath, "PG_CONNECTION", "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker");
         }
 
         public async Task StartWorking()
@@ -158,6 +163,12 @@ namespace RestAPI
         {
             try
             {
+                if (method == "OPTIONS")
+                    return BuildCorsPreflightResponse(headers);
+
+                if (path == "/api/products" && method == "GET")
+                    return await HandleGetProducts();
+
                 if (path == "/api/orders" && method == "POST")
                     return await HandleCreateOrder(body);
 
@@ -180,6 +191,18 @@ namespace RestAPI
             }
         }
 
+        private byte[] BuildCorsPreflightResponse(Dictionary<string, string> headers)
+        {
+            string responseHeaders =
+                "HTTP/1.1 204 No Content\r\n" +
+                "Access-Control-Allow-Origin: *\r\n" +
+                "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n" +
+                "Access-Control-Allow-Headers: Content-Type, Authorization\r\n" +
+                "Access-Control-Max-Age: 86400\r\n" +
+                "Content-Length: 0\r\nConnection: close\r\n\r\n";
+            return Encoding.ASCII.GetBytes(responseHeaders);
+        }
+
         private async Task<byte[]> HandleCreateOrder(byte[] body)
         {
             var req = JsonSerializer.Deserialize<CreateOrderFullRequest>(body);
@@ -192,21 +215,31 @@ namespace RestAPI
             if (string.IsNullOrWhiteSpace(req.Address))
                 return BuildErrorResponse(400, "Address is required");
 
-            int? userId = await GetUserIdByCredentials(req.Email, req.Password);
+            int? userId = await WorkWithDB.GetUserIdByCredentials(connectionString, req.Email, req.Password);
             if (userId == null)
             {
-                if (await UserExists(req.Email))
+                if (await WorkWithDB.UserExists(connectionString, req.Email))
                     return BuildErrorResponse(401, "Invalid email or password");
-                userId = await CreateUser(req.Email, req.Password);
+                userId = await WorkWithDB.CreateUser(connectionString, req.Email, req.Password);
+            }
+
+            var fullItems = new List<OrderItem>();
+            foreach (var item in req.Items)
+            {
+                var product = await WorkWithDB.GetProductById(connectionString, item.ProductId);
+                if (product == null)
+                    return BuildErrorResponse(400, $"Product with ID '{item.ProductId}' not found");
+                product.Quantity = item.Quantity;
+                fullItems.Add(product);
             }
 
             DateTime createdAt = DateTime.UtcNow;
-            int orderId = await SaveOrderToDatabase(userId.Value, req, createdAt, published: false);
+            int orderId = await WorkWithDB.SaveOrderToDatabase(connectionString, userId.Value, fullItems, req.DeliveryType, req.Address, createdAt, published: false, req.CardNumber);
 
-            decimal totalAmount = Math.Round(req.Items.Sum(i => i.Price * i.Quantity), 2);
-            bool published = await PublishWithRetryAsync(orderId, userId.Value, req, createdAt, totalAmount);
+            decimal totalAmount = Math.Round(fullItems.Sum(i => i.Price * i.Quantity), 2);
+            bool published = await PublishWithRetryAsync(orderId, userId.Value, fullItems, req.DeliveryType, req.Address, createdAt, totalAmount, req.CardNumber);
             if (published)
-                await MarkOrderAsPublished(orderId);
+                await WorkWithDB.MarkOrderAsPublished(connectionString, orderId);
 
             var response = new
             {
@@ -217,136 +250,39 @@ namespace RestAPI
             return BuildJsonResponse(202, response);
         }
 
+        private async Task<byte[]> HandleGetProducts()
+        {
+            var products = new List<object>();
+            await using var conn = new NpgsqlConnection(connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new NpgsqlCommand("SELECT product_id, name FROM products ORDER BY name", conn);
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                products.Add(new
+                {
+                    productId = reader.GetInt32(0),
+                    name = reader.GetString(1)
+                });
+            }
+            return BuildJsonResponse(200, products);
+        }
+
         private async Task<byte[]> HandleGetOrder(string orderIdStr)
         {
             if (!int.TryParse(orderIdStr, out int orderId))
                 return BuildErrorResponse(400, "Invalid order ID");
 
-            var order = await GetOrderFromDatabase(orderId);
+            var order = await WorkWithDB.GetOrderFromDatabase(connectionString, orderId);
             if (order == null)
                 return BuildErrorResponse(404, "Order not found");
 
             return BuildJsonResponse(200, order);
         }
 
-        // ================== Работа с PostgreSQL ==================
-        private async Task<int> SaveOrderToDatabase(int userId, CreateOrderFullRequest request, DateTime createdAt, bool published)
-        {
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            string itemsJson = JsonSerializer.Serialize(request.Items);
-            await using var cmd = new NpgsqlCommand(
-                @"INSERT INTO orders (user_id, status, published_to_queue, items, delivery_type, address, created_at, updated_at)
-                  VALUES (@userId, 'accepted', @published, @items::jsonb, @deliveryType, @address, @createdAt, @createdAt)
-                  RETURNING order_id", conn);
+        
 
-            cmd.Parameters.AddWithValue("userId", userId);
-            cmd.Parameters.AddWithValue("published", published);
-            cmd.Parameters.AddWithValue("items", itemsJson);
-            cmd.Parameters.AddWithValue("deliveryType", request.DeliveryType ?? "standard");
-            cmd.Parameters.AddWithValue("address", request.Address);
-            cmd.Parameters.AddWithValue("createdAt", createdAt);
-            return (int)await cmd.ExecuteScalarAsync();
-        }
-
-        private async Task MarkOrderAsPublished(int orderId)
-        {
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "UPDATE orders SET published_to_queue = TRUE WHERE order_id = @orderId", conn);
-            cmd.Parameters.AddWithValue("orderId", orderId);
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        private async Task<object?> GetOrderFromDatabase(int orderId)
-        {
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "SELECT order_id, status, created_at, updated_at, items, delivery_type, address FROM orders WHERE order_id = @orderId", conn);
-            cmd.Parameters.AddWithValue("orderId", orderId);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
-            {
-                string itemsJson = reader.GetString(4);
-                return new
-                {
-                    orderId = reader.GetInt32(0),
-                    status = reader.GetString(1),
-                    createdAt = reader.GetDateTime(2).ToString("o"),
-                    updatedAt = reader.GetDateTime(3).ToString("o"),
-                    items = JsonSerializer.Deserialize<object>(itemsJson),
-                    deliveryType = reader.GetString(5),
-                    address = reader.GetString(6)
-                };
-            }
-            return null;
-        }
-
-        private byte[] GenerateSalt(int length = 32)
-        {
-            byte[] salt = new byte[length];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(salt);
-            return salt;
-        }
-
-        private byte[] ComputeHashWithSalt(string password, byte[] salt)
-        {
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-            byte[] combined = new byte[passwordBytes.Length + salt.Length];
-            Buffer.BlockCopy(passwordBytes, 0, combined, 0, passwordBytes.Length);
-            Buffer.BlockCopy(salt, 0, combined, passwordBytes.Length, salt.Length);
-            using var sha = SHA256.Create();
-            return sha.ComputeHash(combined);
-        }
-
-        private async Task<bool> UserExists(string email)
-        {
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "SELECT EXISTS(SELECT 1 FROM users WHERE LOWER(email) = LOWER(@email))", conn);
-            cmd.Parameters.AddWithValue("email", email);
-            return (bool)await cmd.ExecuteScalarAsync();
-        }
-
-        private async Task<int> CreateUser(string email, string password)
-        {
-            byte[] salt = GenerateSalt();
-            byte[] hash = ComputeHashWithSalt(password, salt);
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "INSERT INTO users (email, password_hash, salt) VALUES (@email, @hash, @salt) RETURNING id", conn);
-            cmd.Parameters.AddWithValue("email", email);
-            cmd.Parameters.AddWithValue("hash", hash);
-            cmd.Parameters.AddWithValue("salt", salt);
-            return (int)await cmd.ExecuteScalarAsync();
-        }
-
-        private async Task<int?> GetUserIdByCredentials(string email, string password)
-        {
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "SELECT id, password_hash, salt FROM users WHERE LOWER(email) = LOWER(@email)", conn);
-            cmd.Parameters.AddWithValue("email", email);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
-            {
-                int userId = reader.GetInt32(0);
-                byte[] storedHash = (byte[])reader[1];
-                byte[] storedSalt = (byte[])reader[2];
-                byte[] computedHash = ComputeHashWithSalt(password, storedSalt);
-                if (computedHash.SequenceEqual(storedHash))
-                    return userId;
-            }
-            return null;
-        }
-
-        private async Task<bool> PublishWithRetryAsync(int orderId, int userId, CreateOrderFullRequest orderReq, DateTime createdAt, decimal totalAmount, int maxRetries = 3)
+        private async Task<bool> PublishWithRetryAsync(int orderId, int userId, List<OrderItem> items, string deliveryType, string address, DateTime createdAt, decimal totalAmount, string cardNumber, int maxRetries = 3)
         {
             for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
@@ -359,12 +295,12 @@ namespace RestAPI
                     {
                         orderId = orderId,
                         userId = userId,
-                        items = orderReq.Items,
-                        deliveryType = orderReq.DeliveryType,
-                        address = orderReq.Address,
+                        items = items,
+                        deliveryType = deliveryType,
+                        address = address,
                         createdAt = createdAt.ToString("o"),
                         totalAmount = totalAmount,
-                        cardNumber = orderReq.CardNumber
+                        cardNumber = cardNumber
                     };
                     string messageJson = JsonSerializer.Serialize(message);
 
@@ -415,23 +351,15 @@ namespace RestAPI
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(30));
-                    var unpublishedOrders = await GetUnpublishedOrders();
+                    var unpublishedOrders = await WorkWithDB.GetUnpublishedOrders(connectionString);
 
                     foreach (var order in unpublishedOrders)
                     {
-                        var request = new CreateOrderFullRequest
-                        {
-                            Email = "",
-                            Password = "",
-                            Items = JsonSerializer.Deserialize<List<OrderItem>>(order.ItemsJson),
-                            DeliveryType = order.DeliveryType,
-                            Address = order.Address
-                        };
-
-                        decimal totalAmount = request.Items.Sum(i => i.Price * i.Quantity);
-                        bool published = await PublishWithRetryAsync(order.OrderId, order.UserId, request, order.CreatedAt, totalAmount);
+                        var items = JsonSerializer.Deserialize<List<OrderItem>>(order.ItemsJson);
+                        decimal totalAmount = items.Sum(i => i.Price * i.Quantity);
+                        bool published = await PublishWithRetryAsync(order.OrderId, order.UserId, items, order.DeliveryType, order.Address, order.CreatedAt, totalAmount, order.CardNumber);
                         if (published)
-                            await MarkOrderAsPublished(order.OrderId);
+                            await WorkWithDB.MarkOrderAsPublished(connectionString, order.OrderId);
                     }
                 }
                 catch (Exception ex)
@@ -441,41 +369,6 @@ namespace RestAPI
             }
         }
 
-        private class UnpublishedOrder
-        {
-            public int OrderId { get; set; }
-            public int UserId { get; set; }
-            public string ItemsJson { get; set; }
-            public string DeliveryType { get; set; }
-            public string Address { get; set; }
-            public DateTime CreatedAt { get; set; }
-        }
-
-        private async Task<List<UnpublishedOrder>> GetUnpublishedOrders()
-        {
-            var list = new List<UnpublishedOrder>();
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                @"SELECT order_id, user_id, items::text, delivery_type, address, created_at 
-                  FROM orders 
-                  WHERE status = 'accepted' AND published_to_queue = FALSE 
-                  ORDER BY created_at", conn);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                list.Add(new UnpublishedOrder
-                {
-                    OrderId = reader.GetInt32(0),
-                    UserId = reader.GetInt32(1),
-                    ItemsJson = reader.GetString(2),
-                    DeliveryType = reader.GetString(3),
-                    Address = reader.GetString(4),
-                    CreatedAt = reader.GetDateTime(5)
-                });
-            }
-            return list;
-        }
 
         private byte[] BuildErrorResponse(int statusCode, string message)
         {
@@ -498,10 +391,7 @@ namespace RestAPI
                 500 => "Internal Server Error",
                 _ => "Unknown"
             };
-            string headers = $"HTTP/1.1 {statusCode} {statusText}\r\n" +
-                             "Content-Type: application/json\r\n" +
-                             $"Content-Length: {bodyBytes.Length}\r\n" +
-                             "Connection: close\r\n\r\n";
+            string headers = $"HTTP/1.1 {statusCode} {statusText}\r\n" + "Content-Type: application/json\r\n" + "Access-Control-Allow-Origin: *\r\n" + $"Content-Length: {bodyBytes.Length}\r\n" + "Connection: close\r\n\r\n";
             byte[] headerBytes = Encoding.ASCII.GetBytes(headers);
             byte[] fullResponse = new byte[headerBytes.Length + bodyBytes.Length];
             Array.Copy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
@@ -511,7 +401,7 @@ namespace RestAPI
 
         private async Task SendAnswer(byte[] answer, Socket socket)
         {
-            await socket.SendAsync(answer, SocketFlags.None);
+            await socket.SendAsync(answer);
         }
 
         public class CreateOrderFullRequest
@@ -523,17 +413,25 @@ namespace RestAPI
             [System.Text.Json.Serialization.JsonPropertyName("cardNumber")]
             public string CardNumber { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("items")]
-            public List<OrderItem> Items { get; set; }
+            public List<CreateOrderItemRequest> Items { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("deliveryType")]
             public string DeliveryType { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("address")]
             public string Address { get; set; }
         }
 
+        public class CreateOrderItemRequest
+        {
+            [System.Text.Json.Serialization.JsonPropertyName("productId")]
+            public int ProductId { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("quantity")]
+            public int Quantity { get; set; }
+        }
+
         public class OrderItem
         {
             [System.Text.Json.Serialization.JsonPropertyName("productId")]
-            public string ProductId { get; set; }
+            public int ProductId { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("name")]
             public string Name { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("quantity")]

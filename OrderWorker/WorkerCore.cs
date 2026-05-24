@@ -6,33 +6,28 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Npgsql;
+using Shared;
 
 namespace OrderWorker
 {
     public class WorkerCore
     {
-        private readonly IPAddress brokerIP;
-        private readonly int brokerPort;
-        private readonly string connectionString;
-        private readonly string workerId;
+        IPAddress brokerIP;
+        int brokerPort;
+        string connectionString;
+        string workerId;
 
-        private readonly IPAddress cardServiceIP;
-        private readonly int cardServicePort;
+        IPAddress cardServiceIP;
+        int cardServicePort;
 
         public WorkerCore(string[] args)
         {
-            brokerIP = IPAddress.Parse(
-                Environment.GetEnvironmentVariable("BROKER_HOST") ?? "127.0.0.3");
-            brokerPort = int.Parse(
-                Environment.GetEnvironmentVariable("BROKER_PORT") ?? "5002");
-            connectionString = Environment.GetEnvironmentVariable("PG_CONNECTION")
-                ?? "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker";
-
-            cardServiceIP = IPAddress.Parse(
-                Environment.GetEnvironmentVariable("CARD_SERVICE_HOST") ?? "127.0.0.4");
-            //cardServiceIP = IPAddress.Parse("192.168.10.115");
-            cardServicePort = int.Parse(
-                Environment.GetEnvironmentVariable("CARD_SERVICE_PORT") ?? "6000");
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
+            brokerIP = IPAddress.Parse(ConfigLoader.Get(configPath, "BROKER_HOST", "127.0.0.3"));
+            brokerPort = int.Parse(ConfigLoader.Get(configPath, "BROKER_PORT", "5002"));
+            connectionString = ConfigLoader.Get(configPath, "PG_CONNECTION", "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker");
+            cardServiceIP = IPAddress.Parse(ConfigLoader.Get(configPath, "CARD_SERVICE_HOST", "127.0.0.4"));
+            cardServicePort = int.Parse(ConfigLoader.Get(configPath, "CARD_SERVICE_PORT", "6000"));
 
             workerId = Guid.NewGuid().ToString("N");
         }
@@ -80,6 +75,12 @@ namespace OrderWorker
                     Console.WriteLine("Получено пустое тело сообщения");
                     return;
                 }
+                if (!body.StartsWith('{'))
+                {
+                    Console.WriteLine($"Получено некорректное тело (не JSON), удаление из очереди");
+                    await DeleteMessageAsync(messageId, -1); 
+                    return;
+                }
 
                 var order = JsonSerializer.Deserialize<OrderMessage>(body);
                 if (order == null)
@@ -101,6 +102,7 @@ namespace OrderWorker
 
                 Console.WriteLine($"Получен заказ {order.OrderId}, сумма {order.TotalAmount}. Обработка...");
 
+                await Task.Delay(100); // имитация обработки 100 мс
                 bool paymentSuccess = await TryChargeCard(order.UserId, order.TotalAmount, order.CardNumber);
                 if (paymentSuccess)
                 {
@@ -146,21 +148,21 @@ namespace OrderWorker
         {
             try
             {
-                Console.WriteLine($"[ВОРКЕР] Подключаюсь к CardService {cardServiceIP}:{cardServicePort}");
+                Console.WriteLine($"Подключаюсь к CardService {cardServiceIP}:{cardServicePort}");
                 using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 await socket.ConnectAsync(new IPEndPoint(cardServiceIP, cardServicePort));
 
-                string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n"; Console.WriteLine($"[ВОРКЕР] Отправляю: {cmd.Trim()}");
+                string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n"; Console.WriteLine($"Отправляю: {cmd.Trim()}");
                 byte[] cmdBytes = Encoding.UTF8.GetBytes(cmd);
                 await socket.SendAsync(cmdBytes, SocketFlags.None);
 
                 string? response = await ReceiveLineAsync(socket);
-                Console.WriteLine($"[ВОРКЕР] Ответ от CardService: '{response}'");
+                Console.WriteLine($"Ответ от CardService: '{response}'");
                 return response != null && response.StartsWith("OK");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ВОРКЕР] Ошибка соединения с CardService: {ex.Message}");
+                Console.WriteLine($"Ошибка соединения с CardService: {ex.Message}");
                 return false;
             }
         }
@@ -169,8 +171,7 @@ namespace OrderWorker
         {
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "SELECT status FROM orders WHERE order_id = @orderId", conn);
+            await using var cmd = new NpgsqlCommand("SELECT status FROM orders WHERE order_id = @orderId", conn);
             cmd.Parameters.AddWithValue("orderId", orderId);
             var result = await cmd.ExecuteScalarAsync();
             return result?.ToString();
@@ -182,9 +183,7 @@ namespace OrderWorker
             {
                 await using var conn = new NpgsqlConnection(connectionString);
                 await conn.OpenAsync();
-                await using var cmd = new NpgsqlCommand(
-                    "UPDATE orders SET status = @newStatus, updated_at = @updatedAt WHERE order_id = @orderId",
-                    conn);
+                await using var cmd = new NpgsqlCommand("UPDATE orders SET status = @newStatus, updated_at = @updatedAt WHERE order_id = @orderId", conn);
                 cmd.Parameters.AddWithValue("newStatus", newStatus);
                 cmd.Parameters.AddWithValue("updatedAt", DateTime.UtcNow);
                 cmd.Parameters.AddWithValue("orderId", orderId);
@@ -234,7 +233,7 @@ namespace OrderWorker
         private class OrderItem
         {
             [System.Text.Json.Serialization.JsonPropertyName("productId")]
-            public string ProductId { get; set; }
+            public int ProductId { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("name")]
             public string Name { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("quantity")]

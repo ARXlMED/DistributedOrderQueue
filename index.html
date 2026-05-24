@@ -109,18 +109,17 @@
     <div>
         <h3>Ваши данные</h3>
         <input type="email" id="email" placeholder="Email" value="user@example.com">
-        <input type="password" id="password" placeholder="Пароль" value="secret">
+        <input type="password" id="password" placeholder="Пароль" value="12345">
         <input type="text" id="cardNumber" placeholder="Номер карты" value="1234567812345678">
     </div>
 
     <div>
         <h3>Товары</h3>
+        <datalist id="products-list"></datalist>
         <div id="order-items">
             <div class="order-item-row">
-                <input type="text" class="item-product-id" placeholder="Код" value="p1">
-                <input type="text" class="item-name" placeholder="Название" value="Футболка">
+                <input type="text" class="item-name" placeholder="Название" list="products-list" value="Футболка">
                 <input type="number" class="item-qty" placeholder="Кол-во" value="2" min="1">
-                <input type="number" class="item-price" placeholder="Цена" value="19.99" step="0.01">
             </div>
         </div>
         <button onclick="addItem()" style="width:auto; margin-top:5px;">+ Добавить товар</button>
@@ -139,7 +138,6 @@
     <button onclick="createOrder()" style="margin-top:20px;">Оформить заказ</button>
     <div id="order-error" style="color:red; margin-top:10px;"></div>
 
-    <!-- Отслеживание заказа -->
     <div id="tracking" style="display:none; margin-top:20px;">
         <h3>Заказ <span id="orderIdDisplay"></span></h3>
         <div class="status-bar">
@@ -155,18 +153,6 @@
                 <div class="circle">✕</div>
                 <div class="status-label">Отменён</div>
             </div>
-            <div class="status-step" id="step-shipped">
-                <div class="circle">3</div>
-                <div class="status-label">Отправлен</div>
-            </div>
-            <div class="status-step" id="step-at_pickup">
-                <div class="circle">4</div>
-                <div class="status-label">В пункте выдачи</div>
-            </div>
-            <div class="status-step" id="step-delivered">
-                <div class="circle">5</div>
-                <div class="status-label">Доставлен</div>
-            </div>
         </div>
     </div>
 
@@ -174,20 +160,40 @@
         const API_BASE = 'http://127.0.0.2:5001';
         let currentOrderId = null;
         let pollInterval = null;
-        // Порядок статусов для прогресс-бара (отображаются все, cancelled показывается особым образом)
-        const statusOrder = ['accepted', 'processed', 'shipped', 'at_pickup', 'delivered'];
+        const statusOrder = ['accepted', 'processed'];
+
+        let productCatalog = []; // загружается при старте
+
+        // Загрузка каталога товаров
+        async function loadCatalog() {
+            try {
+                const resp = await fetch(`${API_BASE}/api/products`);
+                if (resp.ok) {
+                    productCatalog = await resp.json();
+                    const list = document.getElementById('products-list');
+                    list.innerHTML = '';
+                    productCatalog.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.name;        // показываем название
+                        opt.dataset.productId = p.productId; // храним ID
+                        list.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error('Ошибка загрузки каталога', err);
+            }
+        }
+        loadCatalog();
 
         function addItem() {
             const container = document.getElementById('order-items');
             const row = document.createElement('div');
             row.className = 'order-item-row';
             row.innerHTML = `
-                    <input type="text" class="item-product-id" placeholder="Код" value="">
-                    <input type="text" class="item-name" placeholder="Название" value="">
-                    <input type="number" class="item-qty" placeholder="Кол-во" value="1" min="1">
-                    <input type="number" class="item-price" placeholder="Цена" value="0.00" step="0.01">
-                    <button onclick="this.parentElement.remove()" style="width:auto; background-color:#f44336;">X</button>
-                `;
+        <input type="text" class="item-name" placeholder="Название" list="products-list" value="">
+        <input type="number" class="item-qty" placeholder="Кол-во" value="1" min="1">
+        <button onclick="this.parentElement.remove()" style="width:auto; background-color:#f44336;">X</button>
+    `;
             container.appendChild(row);
         }
 
@@ -195,12 +201,16 @@
             const rows = document.querySelectorAll('.order-item-row');
             const items = [];
             rows.forEach(row => {
-                const productId = row.querySelector('.item-product-id').value.trim();
                 const name = row.querySelector('.item-name').value.trim();
                 const quantity = parseInt(row.querySelector('.item-qty').value) || 0;
-                const price = parseFloat(row.querySelector('.item-price').value) || 0;
-                if (productId && name && quantity > 0) {
-                    items.push({ productId, name, quantity, price });
+                if (name && quantity > 0) {
+                    const product = productCatalog.find(p => p.name === name);
+                    if (product) {
+                        items.push({ productId: product.productId, quantity });
+                    } else {
+                        // название не найдено – подсветим ошибку позже
+                        items.push({ productId: null, quantity, name });
+                    }
                 }
             });
             return items;
@@ -226,6 +236,10 @@
             }
             if (items.length === 0) {
                 document.getElementById('order-error').textContent = 'Добавьте хотя бы один товар';
+                return;
+            }
+            if (items.some(i => i.productId === null)) {
+                document.getElementById('order-error').textContent = 'Некоторые названия товаров не найдены в каталоге';
                 return;
             }
             if (!address) {
@@ -263,7 +277,7 @@
                     if (!response.ok) throw new Error('Ошибка статуса');
                     const order = await response.json();
                     updateStatusBar(order.status);
-                    if (order.status === 'delivered' || order.status === 'cancelled') {
+                    if (order.status === 'processed' || order.status === 'cancelled') {
                         clearInterval(pollInterval);
                         pollInterval = null;
                     }
@@ -274,29 +288,25 @@
         }
 
         function updateStatusBar(currentStatus) {
-            // Показываем/скрываем шаг cancelled
             const cancelledStep = document.getElementById('step-cancelled');
+            const acceptedStep = document.getElementById('step-accepted');
+            const processedStep = document.getElementById('step-processed');
+
+            cancelledStep.style.display = 'none';
+            acceptedStep.classList.remove('active', 'completed');
+            processedStep.classList.remove('active', 'completed');
+
             if (currentStatus === 'cancelled') {
                 cancelledStep.style.display = 'block';
-                // Все остальные шаги делаем неактивными
-                document.querySelectorAll('.status-step').forEach(step => step.classList.remove('active', 'completed'));
                 cancelledStep.classList.add('active');
                 return;
-            } else {
-                cancelledStep.style.display = 'none';
             }
 
-            let found = false;
-            for (let i = 0; i < statusOrder.length; i++) {
-                const stepEl = document.getElementById('step-' + statusOrder[i]);
-                if (!stepEl) continue;
-                stepEl.classList.remove('active', 'completed');
-                if (statusOrder[i] === currentStatus) {
-                    stepEl.classList.add('active');
-                    found = true;
-                } else if (!found) {
-                    stepEl.classList.add('completed');
-                }
+            if (currentStatus === 'accepted') {
+                acceptedStep.classList.add('active');
+            } else if (currentStatus === 'processed') {
+                acceptedStep.classList.add('completed');
+                processedStep.classList.add('completed');
             }
         }
     </script>

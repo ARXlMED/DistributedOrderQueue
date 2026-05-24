@@ -1,12 +1,12 @@
 <Solution>
   <Folder Name="/Элементы решения/">
-    <File Path="Configuration.env" />
-    <File Path="docker-compose.yml" />
     <File Path="index.html" />
+    <File Path="Пояснительная записка.docx" />
   </Folder>
   <Project Path="CardService/CardService.csproj" Id="2c20eeef-e52f-4356-a242-252adc1b4e5d" />
   <Project Path="MessageBroker/MessageBroker.csproj" />
   <Project Path="OrderWorker/OrderWorker.csproj" Id="f3021c32-d064-4bed-ab6f-0dfdbb582878" />
   <Project Path="RestAPI/RestAPI.csproj" />
+  <Project Path="Shared/Shared.csproj" Id="97e6e4c6-f318-475f-91c1-15b37c5dc488" />
   <Project Path="StressTest/StressTest.csproj" Id="3723de89-9767-4329-85bf-b69ee9b6477a" />
 </Solution>

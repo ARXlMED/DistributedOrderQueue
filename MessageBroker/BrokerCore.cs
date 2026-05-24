@@ -7,26 +7,32 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Shared;
 
 namespace MessageBroker
 {
     public class BrokerCore
     {
-        private readonly IPAddress ipBroker = IPAddress.Parse(Environment.GetEnvironmentVariable("BROKER_LISTEN_HOST") ?? "127.0.0.3");
-        private readonly int portBroker = 5002;
-        private Socket serverSocket;
-        private bool isAlive = false;
+        IPAddress ipBroker;
+        int portBroker;
+        Socket serverSocket;
+        bool isAlive = false;
 
-        private readonly ConcurrentDictionary<string, List<Message>> topics = new();
-        private readonly object locker = new();
+        ConcurrentDictionary<string, List<Message>> topics = new();
+        object locker = new();
 
-        private readonly TimeSpan visibilityTimeout = TimeSpan.FromSeconds(60);
-        private readonly string journalPath = Path.Combine(AppContext.BaseDirectory, "broker_journal.log");
-        private readonly long maxJournalSize = 10L * 1024 * 1024;
+        TimeSpan visibilityTimeout = TimeSpan.FromSeconds(60);
+        string journalPath = Path.Combine(AppContext.BaseDirectory, "broker_journal.log");
+        long maxJournalSize = 10L * 1024 * 1024;
 
         private CancellationTokenSource cts;
 
-        public BrokerCore(string[] args) { }
+        public BrokerCore(string[] args) 
+        {
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
+            ipBroker = IPAddress.Parse(ConfigLoader.Get(configPath, "BROKER_HOST", "127.0.0.3"));
+            portBroker = int.Parse(ConfigLoader.Get(configPath, "BROKER_PORT", "5002"));
+        }
 
         public async Task StartWorking()
         {
@@ -270,23 +276,25 @@ namespace MessageBroker
 
         private void AppendJournal(string entry)
         {
-            try
+            for (int retry = 0; retry < 3; retry++)
             {
-                File.AppendAllText(journalPath, entry + Environment.NewLine);
-
-                FileInfo fileInfo = new FileInfo(journalPath);
-                if (fileInfo.Length > maxJournalSize)
+                try
                 {
-                    Console.WriteLine($"Размер журнала превышен ({fileInfo.Length} > {maxJournalSize}). Начинаем компактификацию...");
                     lock (locker)
                     {
-                        CompactJournal();
+                        File.AppendAllText(journalPath, entry + Environment.NewLine);
                     }
+                    break;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка записи в журнал: {ex.Message}");
+                catch (IOException) when (retry < 2)
+                {
+                    Thread.Sleep(100);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка записи в журнал: {ex.Message}");
+                    break;
+                }
             }
         }
 
@@ -333,9 +341,12 @@ namespace MessageBroker
 
         private void ProcessInvisibleMessages(CancellationToken token)
         {
+            int cycleCounter = 0;
             while (!token.IsCancellationRequested)
             {
                 Thread.Sleep(2000);
+                cycleCounter++;
+
                 lock (locker)
                 {
                     foreach (var kvp in topics)
@@ -350,6 +361,26 @@ namespace MessageBroker
                                 msg.ConsumerId = null;
                             }
                         }
+                    }
+                }
+
+                if (cycleCounter % 30 == 0)
+                {
+                    try
+                    {
+                        FileInfo fileInfo = new FileInfo(journalPath);
+                        if (fileInfo.Exists && fileInfo.Length > maxJournalSize)
+                        {
+                            Console.WriteLine($"Размер журнала превышен ({fileInfo.Length} > {maxJournalSize}). Начинаем компактификацию...");
+                            lock (locker)
+                            {
+                                CompactJournal();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка при проверке размера журнала: {ex.Message}");
                     }
                 }
             }

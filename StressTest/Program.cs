@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Shared;
 
 namespace StressTest
 {
@@ -10,10 +12,14 @@ namespace StressTest
     {
         static async Task Main(string[] args)
         {
-            int count = args.Length > 0 ? int.Parse(args[0]) : 500;
-            int delayMs = args.Length > 1 ? int.Parse(args[1]) : 1000;
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
+            string ipAPI = ConfigLoader.Get(configPath, "API_HOST", "127.0.0.2");
+            string portAPI = ConfigLoader.Get(configPath, "API_PORT", "5001");
 
-            var client = new HttpClient { BaseAddress = new Uri("http://127.0.0.2:5001") };
+            int count = int.Parse(ConfigLoader.Get(configPath, "COUNT", "500"));
+            int delayMs = int.Parse(ConfigLoader.Get(configPath, "DELAY_MS", "20"));
+
+            var client = new HttpClient { BaseAddress = new Uri($"http://{ipAPI}:{portAPI}") };
             var rnd = new Random();
 
             for (int i = 1; i <= count; i++)
@@ -27,10 +33,8 @@ namespace StressTest
                     {
                         new
                         {
-                            productId = $"p-{i}",
-                            name = $"Товар {i}",
-                            quantity = (i % 5) + 1,
-                            price = (decimal)(9.99 + i)
+                            productId = rnd.Next(1, 11),
+                            quantity = (i % 5) + 1
                         }
                     },
                     deliveryType = i % 2 == 0 ? "express" : "standard",
