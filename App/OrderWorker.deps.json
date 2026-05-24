@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v10.0": {
       "OrderWorker/1.0.0": {
         "dependencies": {
-          "Npgsql": "10.0.2"
+          "Npgsql": "10.0.2",
+          "Shared": "1.0.0"
         },
         "runtime": {
           "OrderWorker.dll": {}
@@ -43,6 +44,14 @@
             "fileVersion": "10.0.2.0"
           }
         }
+      },
+      "Shared/1.0.0": {
+        "runtime": {
+          "Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -72,6 +81,11 @@
       "sha512": "sha512-q5RfBI+wywJSFUNDE1L4ZbHEHCFTblo8Uf6A6oe4feOUFYiUQXyAf9GBh5qEZpvJaHiEbpBPkQumjEhXCJxdrg==",
       "path": "npgsql/10.0.2",
       "hashPath": "npgsql.10.0.2.nupkg.sha512"
+    },
+    "Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }
