@@ -104,7 +104,7 @@
     </style>
 </head>
 <body>
-    <h2>🛒 Оформление заказа</h2>
+    <h2>Оформление заказа</h2>
 
     <div>
         <h3>Ваши данные</h3>
@@ -162,9 +162,8 @@
         let pollInterval = null;
         const statusOrder = ['accepted', 'processed'];
 
-        let productCatalog = []; // загружается при старте
+        let productCatalog = [];
 
-        // Загрузка каталога товаров
         async function loadCatalog() {
             try {
                 const resp = await fetch(`${API_BASE}/api/products`);
@@ -174,8 +173,8 @@
                     list.innerHTML = '';
                     productCatalog.forEach(p => {
                         const opt = document.createElement('option');
-                        opt.value = p.name;        // показываем название
-                        opt.dataset.productId = p.productId; // храним ID
+                        opt.value = p.name;        
+                        opt.dataset.productId = p.productId; 
                         list.appendChild(opt);
                     });
                 }
@@ -208,7 +207,6 @@
                     if (product) {
                         items.push({ productId: product.productId, quantity });
                     } else {
-                        // название не найдено – подсветим ошибку позже
                         items.push({ productId: null, quantity, name });
                     }
                 }
