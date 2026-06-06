@@ -63,22 +63,21 @@ namespace RestAPI
         {
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
-            await using var cmd = new NpgsqlCommand(
-                "SELECT order_id, status, created_at, updated_at, items, delivery_type, address FROM orders WHERE order_id = @orderId", conn);
+            await using var cmd = new NpgsqlCommand("SELECT order_id, status, published_to_queue, created_at, updated_at, items, delivery_type, address FROM orders WHERE order_id = @orderId", conn);
             cmd.Parameters.AddWithValue("orderId", orderId);
             await using var reader = await cmd.ExecuteReaderAsync();
             if (await reader.ReadAsync())
             {
-                string itemsJson = reader.GetString(4);
+                string itemsJson = reader.GetString(5);
                 return new
                 {
-                    orderId = reader.GetInt32(0),
                     status = reader.GetString(1),
-                    createdAt = reader.GetDateTime(2).ToString("o"),
-                    updatedAt = reader.GetDateTime(3).ToString("o"),
+                    publishedToQueue = reader.GetBoolean(2),
+                    createdAt = reader.GetDateTime(3).ToString("o"),
+                    updatedAt = reader.GetDateTime(4).ToString("o"),
                     items = JsonSerializer.Deserialize<object>(itemsJson),
-                    deliveryType = reader.GetString(5),
-                    address = reader.GetString(6)
+                    deliveryType = reader.GetString(6),
+                    address = reader.GetString(7)
                 };
             }
             return null;
@@ -183,6 +182,17 @@ namespace RestAPI
                 });
             }
             return list;
+        }
+
+        public static async Task<bool> IsOrderPublished(string connectionString, int orderId)
+        {
+            await using var conn = new NpgsqlConnection(connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new NpgsqlCommand(
+                "SELECT published_to_queue FROM orders WHERE order_id = @orderId", conn);
+            cmd.Parameters.AddWithValue("orderId", orderId);
+            var result = await cmd.ExecuteScalarAsync();
+            return result is true;
         }
     }
 }

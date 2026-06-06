@@ -245,6 +245,7 @@ namespace RestAPI
             {
                 orderId = orderId,
                 status = "accepted",
+                publishedToQueue = published,
                 createdAt = createdAt.ToString("o")
             };
             return BuildJsonResponse(202, response);
@@ -288,6 +289,15 @@ namespace RestAPI
             {
                 try
                 {
+                    if (attempt > 1)
+                    {
+                        bool alreadyPublished = await WorkWithDB.IsOrderPublished(connectionString, orderId);
+                        if (alreadyPublished)
+                        {
+                            Console.WriteLine($"Заказ {orderId} уже опубликован другим потоком");
+                            return true;
+                        }
+                    }
                     using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     await socket.ConnectAsync(new IPEndPoint(brokerIP, brokerPort));
 

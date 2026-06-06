@@ -35,8 +35,13 @@
             font-size: 16px;
         }
 
-            button:hover {
+            button:hover:not(:disabled) {
                 background-color: #45a049;
+            }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
             }
 
         .order-item-row {
@@ -89,10 +94,6 @@
                 font-weight: bold;
             }
 
-            .status-step.active .circle {
-                background: #2196F3;
-            }
-
             .status-step.completed .circle {
                 background: #4CAF50;
             }
@@ -100,6 +101,23 @@
         .status-label {
             font-size: 0.8em;
             margin-top: 5px;
+        }
+
+        #check-status-btn {
+            margin-top: 10px;
+            background-color: #2196F3;
+        }
+
+            #check-status-btn:hover:not(:disabled) {
+                background-color: #1976D2;
+            }
+
+        #cancelled-info {
+            display: none;
+            text-align: center;
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -135,7 +153,7 @@
         <input type="text" id="address" placeholder="г. Минск, ул. Примерная, д.5" value="г. Минск, ул. Примерная, д.5">
     </div>
 
-    <button onclick="createOrder()" style="margin-top:20px;">Оформить заказ</button>
+    <button id="order-btn" onclick="createOrder()" style="margin-top:20px;">Оформить заказ</button>
     <div id="order-error" style="color:red; margin-top:10px;"></div>
 
     <div id="tracking" style="display:none; margin-top:20px;">
@@ -145,23 +163,22 @@
                 <div class="circle">1</div>
                 <div class="status-label">Принят</div>
             </div>
-            <div class="status-step" id="step-processed">
+            <div class="status-step" id="step-queued">
                 <div class="circle">2</div>
+                <div class="status-label">В очереди</div>
+            </div>
+            <div class="status-step" id="step-processed">
+                <div class="circle">3</div>
                 <div class="status-label">Обработан</div>
             </div>
-            <div class="status-step" id="step-cancelled" style="display:none;">
-                <div class="circle">✕</div>
-                <div class="status-label">Отменён</div>
-            </div>
         </div>
+        <div id="cancelled-info">✕ Заказ отменён</div>
+        <button id="check-status-btn" onclick="checkStatus()">Проверить статус</button>
     </div>
 
     <script>
         const API_BASE = 'http://127.0.0.2:5001';
         let currentOrderId = null;
-        let pollInterval = null;
-        const statusOrder = ['accepted', 'processed'];
-
         let productCatalog = [];
 
         async function loadCatalog() {
@@ -173,8 +190,8 @@
                     list.innerHTML = '';
                     productCatalog.forEach(p => {
                         const opt = document.createElement('option');
-                        opt.value = p.name;        
-                        opt.dataset.productId = p.productId; 
+                        opt.value = p.name;
+                        opt.dataset.productId = p.productId;
                         list.appendChild(opt);
                     });
                 }
@@ -189,10 +206,10 @@
             const row = document.createElement('div');
             row.className = 'order-item-row';
             row.innerHTML = `
-        <input type="text" class="item-name" placeholder="Название" list="products-list" value="">
-        <input type="number" class="item-qty" placeholder="Кол-во" value="1" min="1">
-        <button onclick="this.parentElement.remove()" style="width:auto; background-color:#f44336;">X</button>
-    `;
+                <input type="text" class="item-name" placeholder="Название" list="products-list" value="">
+                <input type="number" class="item-qty" placeholder="Кол-во" value="1" min="1">
+                <button onclick="this.parentElement.remove()" style="width:auto; background-color:#f44336;">X</button>
+            `;
             container.appendChild(row);
         }
 
@@ -214,7 +231,20 @@
             return items;
         }
 
+        // Полный сброс панели отслеживания перед новым заказом
+        function resetTracking() {
+            document.getElementById('tracking').style.display = 'none';
+            document.getElementById('cancelled-info').style.display = 'none';
+            document.getElementById('check-status-btn').style.display = 'block';
+            const steps = ['accepted', 'queued', 'processed'];
+            steps.forEach(id => {
+                const el = document.getElementById('step-' + id);
+                if (el) el.classList.remove('completed');
+            });
+        }
+
         async function createOrder() {
+            const orderBtn = document.getElementById('order-btn');
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const cardNumber = document.getElementById('cardNumber').value.trim();
@@ -245,6 +275,9 @@
                 return;
             }
 
+            orderBtn.disabled = true;
+            resetTracking();
+
             const body = { email, password, cardNumber, items, deliveryType, address };
 
             try {
@@ -258,53 +291,64 @@
                     currentOrderId = data.orderId;
                     document.getElementById('orderIdDisplay').textContent = currentOrderId;
                     document.getElementById('tracking').style.display = 'block';
-                    startPollingStatus();
+
+                    // Устанавливаем круги в зависимости от publishedToQueue
+                    updateStatusBar('accepted', data.publishedToQueue);
                 } else {
                     throw new Error(data.error || 'Ошибка создания заказа');
                 }
             } catch (err) {
                 document.getElementById('order-error').textContent = err.message;
+            } finally {
+                orderBtn.disabled = false;
             }
         }
 
-        function startPollingStatus() {
-            if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(async () => {
-                try {
-                    const response = await fetch(`${API_BASE}/api/orders/${currentOrderId}`);
-                    if (!response.ok) throw new Error('Ошибка статуса');
-                    const order = await response.json();
-                    updateStatusBar(order.status);
-                    if (order.status === 'processed' || order.status === 'cancelled') {
-                        clearInterval(pollInterval);
-                        pollInterval = null;
-                    }
-                } catch (err) {
-                    console.error(err);
+        async function checkStatus() {
+            if (!currentOrderId) return;
+            try {
+                const response = await fetch(`${API_BASE}/api/orders/${currentOrderId}`);
+                if (!response.ok) throw new Error('Ошибка получения статуса');
+                const order = await response.json();
+
+                updateStatusBar(order.status, order.publishedToQueue);
+
+                if (order.status === 'processed' || order.status === 'cancelled') {
+                    document.getElementById('check-status-btn').style.display = 'none';
                 }
-            }, 1000);
+            } catch (err) {
+                console.error(err);
+                alert('Не удалось получить статус заказа');
+            }
         }
 
-        function updateStatusBar(currentStatus) {
-            const cancelledStep = document.getElementById('step-cancelled');
-            const acceptedStep = document.getElementById('step-accepted');
-            const processedStep = document.getElementById('step-processed');
+        function updateStatusBar(status, publishedToQueue) {
+            const accepted = document.getElementById('step-accepted');
+            const queued = document.getElementById('step-queued');
+            const processed = document.getElementById('step-processed');
+            const cancelledInfo = document.getElementById('cancelled-info');
 
-            cancelledStep.style.display = 'none';
-            acceptedStep.classList.remove('active', 'completed');
-            processedStep.classList.remove('active', 'completed');
+            accepted.classList.remove('completed');
+            queued.classList.remove('completed');
+            processed.classList.remove('completed');
+            cancelledInfo.style.display = 'none';
 
-            if (currentStatus === 'cancelled') {
-                cancelledStep.style.display = 'block';
-                cancelledStep.classList.add('active');
+            if (status === 'cancelled') {
+                cancelledInfo.style.display = 'block';
                 return;
             }
 
-            if (currentStatus === 'accepted') {
-                acceptedStep.classList.add('active');
-            } else if (currentStatus === 'processed') {
-                acceptedStep.classList.add('completed');
-                processedStep.classList.add('completed');
+            // Шаг 1 всегда выполнен, если заказ создан
+            accepted.classList.add('completed');
+
+            if (status === 'accepted' || status === 'processed') {
+                // Второй шаг — только если заказ действительно в очереди
+                if (publishedToQueue) {
+                    queued.classList.add('completed');
+                }
+            }
+            if (status === 'processed') {
+                processed.classList.add('completed');
             }
         }
     </script>
