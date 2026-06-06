@@ -49,6 +49,9 @@ CREATE TABLE IF NOT EXISTS orders (
     delivery_type VARCHAR(50) NOT NULL DEFAULT 'standard',
     address TEXT NOT NULL,
     card_number VARCHAR(19) DEFAULT '',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 ### Для carddb
 
