@@ -1,5 +1,5 @@
-﻿API_HOST=127.0.0.2
+﻿API_HOST=26.201.26.30
 API_PORT=5001
-BROKER_HOST=127.0.0.3
+BROKER_HOST=26.215.217.71
 BROKER_PORT=5002
 PG_CONNECTION=Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=stalker

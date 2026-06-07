@@ -150,9 +150,12 @@ namespace OrderWorker
             {
                 Console.WriteLine($"Подключаюсь к CardService {cardServiceIP}:{cardServicePort}");
                 using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.SendTimeout = 5000;
+                socket.ReceiveTimeout = 5000;
                 await socket.ConnectAsync(new IPEndPoint(cardServiceIP, cardServicePort));
 
-                string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n"; Console.WriteLine($"Отправляю: {cmd.Trim()}");
+                string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n";
+                Console.WriteLine($"Отправляю: {cmd.Trim()}");
                 byte[] cmdBytes = Encoding.UTF8.GetBytes(cmd);
                 await socket.SendAsync(cmdBytes, SocketFlags.None);
 
