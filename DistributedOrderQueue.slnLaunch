@@ -26,6 +26,11 @@
         "Path": "CardService\\CardService.csproj",
         "Action": "StartWithoutDebugging",
         "DebugTarget": "CardService"
+      },
+      {
+        "Path": "WebServer\\WebServer.csproj",
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "WebServer"
       }
     ]
   }

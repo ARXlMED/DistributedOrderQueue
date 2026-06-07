@@ -102,7 +102,7 @@ namespace OrderWorker
 
                 Console.WriteLine($"Получен заказ {order.OrderId}, сумма {order.TotalAmount}. Обработка...");
 
-                await Task.Delay(100); // имитация обработки 100 мс
+                await Task.Delay(1000); // имитация обработки 1000 мс
                 bool paymentSuccess = await TryChargeCard(order.UserId, order.TotalAmount, order.CardNumber);
                 if (paymentSuccess)
                 {

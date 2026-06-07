@@ -237,18 +237,24 @@ namespace RestAPI
             int orderId = await WorkWithDB.SaveOrderToDatabase(connectionString, userId.Value, fullItems, req.DeliveryType, req.Address, createdAt, published: false, req.CardNumber);
 
             decimal totalAmount = Math.Round(fullItems.Sum(i => i.Price * i.Quantity), 2);
-            bool published = await PublishWithRetryAsync(orderId, userId.Value, fullItems, req.DeliveryType, req.Address, createdAt, totalAmount, req.CardNumber);
-            if (published)
-                await WorkWithDB.MarkOrderAsPublished(connectionString, orderId);
-
             var response = new
             {
                 orderId = orderId,
                 status = "accepted",
-                publishedToQueue = published,
+                publishedToQueue = false,
                 createdAt = createdAt.ToString("o")
             };
-            return BuildJsonResponse(202, response);
+            byte[] httpResponse = BuildJsonResponse(202, response);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(200);       
+                bool published = await PublishWithRetryAsync(orderId, userId.Value, fullItems,
+                    req.DeliveryType, req.Address, createdAt, totalAmount, req.CardNumber);
+                if (published)
+                    await WorkWithDB.MarkOrderAsPublished(connectionString, orderId);
+            });
+            return httpResponse;
         }
 
         private async Task<byte[]> HandleGetProducts()

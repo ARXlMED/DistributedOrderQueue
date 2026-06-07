@@ -17,6 +17,7 @@ namespace MessageBroker
         int portBroker;
         Socket serverSocket;
         bool isAlive = false;
+        int statusReportIntervalSec;
 
         ConcurrentDictionary<string, List<Message>> topics = new();
         object locker = new();
@@ -32,6 +33,7 @@ namespace MessageBroker
             string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.txt");
             ipBroker = IPAddress.Parse(ConfigLoader.Get(configPath, "BROKER_HOST", "127.0.0.3"));
             portBroker = int.Parse(ConfigLoader.Get(configPath, "BROKER_PORT", "5002"));
+            statusReportIntervalSec = int.Parse(ConfigLoader.Get(configPath, "STATUS_REPORT_INTERVAL_SEC", "10"));
         }
 
         public async Task StartWorking()
@@ -40,6 +42,7 @@ namespace MessageBroker
 
             cts = new CancellationTokenSource();
             _ = Task.Run(() => ProcessInvisibleMessages(cts.Token));
+            _ = Task.Run(() => PeriodicStatusReport(cts.Token));
 
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
@@ -384,6 +387,47 @@ namespace MessageBroker
                     }
                 }
             }
+        }
+
+        private async Task PeriodicStatusReport(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(statusReportIntervalSec), token);
+                lock (locker)
+                {
+                    int totalMessages = 0, totalAvailable = 0, totalInvisible = 0;
+                    foreach (var kvp in topics)
+                    {
+                        foreach (var msg in kvp.Value)
+                        {
+                            totalMessages++;
+                            if (msg.Status == MessageStatus.Available) totalAvailable++;
+                            else if (msg.Status == MessageStatus.Invisible) totalInvisible++;
+                        }
+                    }
+
+                    string journalSize = "N/A";
+                    try
+                    {
+                        var fi = new FileInfo(journalPath);
+                        if (fi.Exists) journalSize = FormatBytes(fi.Length);
+                    }
+                    catch { }
+
+                    if (totalMessages == 0)
+                        Console.WriteLine($"Очередь пуста (журнал: {journalSize})");
+                    else
+                        Console.WriteLine($"Сообщений: {totalMessages} (доступно: {totalAvailable}, невидимо: {totalInvisible}), журнал: {journalSize}");
+                }
+            }
+        }
+
+        private static string FormatBytes(long bytes)
+        {
+            if (bytes < 1024) return $"{bytes} B";
+            if (bytes < 1024 * 1024) return $"{bytes / 1024.0:F1} KB";
+            return $"{bytes / (1024.0 * 1024.0):F1} MB";
         }
 
         public enum MessageStatus
