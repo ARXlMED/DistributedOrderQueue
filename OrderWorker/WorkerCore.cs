@@ -59,7 +59,7 @@ namespace OrderWorker
             await consumeSocket.ConnectAsync(new IPEndPoint(brokerIP, brokerPort));
 
             byte[] consumeCmd = Encoding.UTF8.GetBytes($"CONSUME orders.new {workerId} 30\n");
-            await consumeSocket.SendAsync(consumeCmd, SocketFlags.None);
+            await consumeSocket.SendAsync(consumeCmd);
 
             string? responseLine = await ReceiveLineAsync(consumeSocket);
             if (responseLine == null) return;
@@ -132,7 +132,7 @@ namespace OrderWorker
             using var deleteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             await deleteSocket.ConnectAsync(new IPEndPoint(brokerIP, brokerPort));
             byte[] deleteCmd = Encoding.UTF8.GetBytes($"DELETE orders.new {messageId} {workerId}\n");
-            await deleteSocket.SendAsync(deleteCmd, SocketFlags.None);
+            await deleteSocket.SendAsync(deleteCmd);
             string? deleteResponse = await ReceiveLineAsync(deleteSocket);
             if (deleteResponse != null && deleteResponse.StartsWith("OK"))
             {
@@ -157,7 +157,7 @@ namespace OrderWorker
                 string cmd = $"CHARGE {userId} {amount.ToString(System.Globalization.CultureInfo.InvariantCulture)} {cardNumber}\n";
                 Console.WriteLine($"Отправляю: {cmd.Trim()}");
                 byte[] cmdBytes = Encoding.UTF8.GetBytes(cmd);
-                await socket.SendAsync(cmdBytes, SocketFlags.None);
+                await socket.SendAsync(cmdBytes);
 
                 string? response = await ReceiveLineAsync(socket);
                 Console.WriteLine($"Ответ от CardService: '{response}'");
@@ -204,7 +204,7 @@ namespace OrderWorker
             byte[] buffer = new byte[1];
             while (true)
             {
-                int received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                int received = await socket.ReceiveAsync(buffer);
                 if (received == 0) return null;
                 if (buffer[0] == (byte)'\n')
                     break;

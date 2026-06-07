@@ -48,7 +48,7 @@ namespace WebServer
             try
             {
                 byte[] buffer = new byte[1024];
-                int received = await client.ReceiveAsync(buffer, SocketFlags.None);
+                int received = await client.ReceiveAsync(buffer);
                 if (received == 0) return;
 
                 string headers = "HTTP/1.1 200 OK\r\n" +
@@ -60,7 +60,7 @@ namespace WebServer
                 Array.Copy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
                 Array.Copy(fileBytes, 0, fullResponse, headerBytes.Length, fileBytes.Length);
 
-                await client.SendAsync(fullResponse, SocketFlags.None);
+                await client.SendAsync(fullResponse);
             }
             catch { }
             finally

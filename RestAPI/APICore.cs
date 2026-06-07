@@ -14,13 +14,13 @@ namespace RestAPI
 {
     public class APICore
     {
-        IPAddress ipAPI = IPAddress.Parse(Environment.GetEnvironmentVariable("API_HOST") ?? "127.0.0.2");
-        int portAPI = int.Parse(Environment.GetEnvironmentVariable("API_PORT") ?? "5001");
+        IPAddress ipAPI;
+        int portAPI;
         Socket acceptClients;
         bool isAlive = false;
 
-        IPAddress brokerIP = IPAddress.Parse(Environment.GetEnvironmentVariable("BROKER_HOST") ?? "127.0.0.3");
-        int brokerPort = int.Parse(Environment.GetEnvironmentVariable("BROKER_PORT") ?? "5002");
+        IPAddress brokerIP;
+        int brokerPort;
 
         string connectionString;
 
@@ -70,7 +70,11 @@ namespace RestAPI
             }
             finally
             {
-                try { client.Shutdown(SocketShutdown.Both); } catch { }
+                try 
+                { 
+                    client.Shutdown(SocketShutdown.Both);
+                } 
+                catch { }
                 client.Close();
             }
         }
@@ -321,9 +325,9 @@ namespace RestAPI
                     string messageJson = JsonSerializer.Serialize(message);
 
                     byte[] cmdBytes = Encoding.UTF8.GetBytes("PUBLISH orders.new\n");
-                    await socket.SendAsync(cmdBytes, SocketFlags.None);
+                    await socket.SendAsync(cmdBytes);
                     byte[] jsonBytes = Encoding.UTF8.GetBytes(messageJson + "\n");
-                    await socket.SendAsync(jsonBytes, SocketFlags.None);
+                    await socket.SendAsync(jsonBytes);
 
                     string? response = await ReceiveLineAsync(socket);
                     if (response != null && response.StartsWith("OK", StringComparison.OrdinalIgnoreCase))
@@ -351,7 +355,7 @@ namespace RestAPI
             byte[] buffer = new byte[1];
             while (true)
             {
-                int received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                int received = await socket.ReceiveAsync(buffer);
                 if (received == 0) return null;
                 if (buffer[0] == (byte)'\n')
                     break;

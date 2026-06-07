@@ -91,7 +91,7 @@ namespace CardService
                     }
 
                     byte[] respBytes = Encoding.UTF8.GetBytes(response + "\n");
-                    await client.SendAsync(respBytes, SocketFlags.None);
+                    await client.SendAsync(respBytes);
                 }
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace CardService
             byte[] buffer = new byte[1];
             while (true)
             {
-                int received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                int received = await socket.ReceiveAsync(buffer);
                 if (received == 0) return null;
                 if (buffer[0] == (byte)'\n')
                     break;
